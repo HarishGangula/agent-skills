@@ -11,6 +11,15 @@ metadata:
 
 ## Overview
 
+Design the Restful APIs which follows the standard and easy to understand , implement and maintain. Provide clear contracts and communicate clearly. It should be clear and extensible to support needs for the future enhancements.
+
+## When to Use
+
+-  Designing new API endpoints
+-  Revising or improving existing APIs
+-  Developing API documentation
+-  Reviewing API implementations for compliance with best practices
+
 ## API Patterns
 
 ### Naming
@@ -28,6 +37,10 @@ metadata:
 
 ## Verification
 
+
+Output format examples
+
+Check List for each HTTP method type
 
 
 
