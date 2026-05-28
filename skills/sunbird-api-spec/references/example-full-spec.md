@@ -54,6 +54,12 @@ All endpoints require a Bearer token in the `Authorization` header. Multi-tenant
 
 ```json
 {
+  "id": "api.order.create",
+  "ver": "1.0",
+  "ts": "2026-05-28T10:30:45+05:30",
+  "params": {
+    "msgid": "4a7f14c3-d61e-4d4f-be78-181834eeff6d"
+  },
   "request": {
     "order": {
       "name": "Bulk Office Supplies",
@@ -83,7 +89,7 @@ All endpoints require a Bearer token in the `Authorization` header. Multi-tenant
   "ts": "2026-05-28T10:30:45Z",
   "params": {
     "resmsgid": "3be02c4b-3324-41a3-afd8-60f6be0584d2",
-    "msgid": null,
+    "msgid": "4a7f14c3-d61e-4d4f-be78-181834eeff6d",
     "err": null,
     "status": "successful",
     "errmsg": null
@@ -121,6 +127,12 @@ curl -X POST 'https://api.example.com/orders/v1/create' \
   -H 'Authorization: Bearer <token>' \
   -H 'X-Channel-Id: <channelId>' \
   -d '{
+    "id": "api.order.create",
+    "ver": "1.0",
+    "ts": "2026-05-28T10:30:45+05:30",
+    "params": {
+      "msgid": "4a7f14c3-d61e-4d4f-be78-181834eeff6d"
+    },
     "request": {
       "order": {
         "name": "Bulk Office Supplies",
@@ -168,7 +180,7 @@ curl -X POST 'https://api.example.com/orders/v1/create' \
   "ts": "2026-05-28T10:31:10Z",
   "params": {
     "resmsgid": "4cf13d5c-4435-42b4-9c47-71f7cf059eda",
-    "msgid": null,
+    "msgid": "9a2c69d8-2b6d-4c9e-fd2d-6d6d89dde9b2",
     "err": null,
     "status": "successful",
     "errmsg": null
@@ -204,8 +216,11 @@ curl -X POST 'https://api.example.com/orders/v1/create' \
 ```bash
 curl -X GET 'https://api.example.com/orders/v1/read/ord_2026052810304500001' \
   -H 'Authorization: Bearer <token>' \
-  -H 'X-Channel-Id: <channelId>'
+  -H 'X-Channel-Id: <channelId>' \
+  -H 'X-Request-Id: 9a2c69d8-2b6d-4c9e-fd2d-6d6d89dde9b2'
 ```
+
+> For body-less requests (GET, DELETE), use the `X-Request-Id` header to supply a UUID for traceability. The server echoes it in `response.params.msgid`.
 
 ---
 
@@ -225,6 +240,12 @@ curl -X GET 'https://api.example.com/orders/v1/read/ord_2026052810304500001' \
 
 ```json
 {
+  "id": "api.order.search",
+  "ver": "1.0",
+  "ts": "2026-05-28T10:32:01+05:30",
+  "params": {
+    "msgid": "6c9b36e5-f83a-4f6b-da9a-3a3a56aabb8f"
+  },
   "request": {
     "filters": {
       "status": "active",
@@ -256,8 +277,8 @@ curl -X GET 'https://api.example.com/orders/v1/read/ord_2026052810304500001' \
   "ver": "1.0",
   "ts": "2026-05-28T10:32:01Z",
   "params": {
-    "resmsgid": "5dg24e6d-5546-53c5-ad58-82g8dg160feb",
-    "msgid": null,
+    "resmsgid": "5d124e6d-5546-43c5-ad58-82c8d6160feb",
+    "msgid": "6c9b36e5-f83a-4f6b-da9a-3a3a56aabb8f",
     "err": null,
     "status": "successful",
     "errmsg": null
@@ -315,6 +336,12 @@ curl -X GET 'https://api.example.com/orders/v1/read/ord_2026052810304500001' \
 
 ```json
 {
+  "id": "api.order.update",
+  "ver": "1.0",
+  "ts": "2026-05-28T10:35:18+05:30",
+  "params": {
+    "msgid": "7e0a47b6-094b-4a7c-eb0b-4b4b67bbcc90"
+  },
   "request": {
     "order": {
       "versionKey": "1748428245207",
@@ -341,8 +368,8 @@ curl -X GET 'https://api.example.com/orders/v1/read/ord_2026052810304500001' \
   "ver": "1.0",
   "ts": "2026-05-28T10:35:18Z",
   "params": {
-    "resmsgid": "6eh35f7e-6657-64d6-be69-93h9eh271fgc",
-    "msgid": null,
+    "resmsgid": "6e235f7e-6657-44d6-be69-93b9ea271fcc",
+    "msgid": "7e0a47b6-094b-4a7c-eb0b-4b4b67bbcc90",
     "err": null,
     "status": "successful",
     "errmsg": null
@@ -394,8 +421,8 @@ curl -X GET 'https://api.example.com/orders/v1/read/ord_2026052810304500001' \
   "ver": "1.0",
   "ts": "2026-05-28T10:40:00Z",
   "params": {
-    "resmsgid": "7fi46g8f-7768-75e7-cf7a-04i0fi382ghd",
-    "msgid": null,
+    "resmsgid": "7f146a8f-7768-45e7-cf7a-04a0fa382ddd",
+    "msgid": "8f1b58c7-1a5c-4b8d-fc1c-5c5c78ccdda1",
     "err": null,
     "status": "successful",
     "errmsg": null

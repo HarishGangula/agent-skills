@@ -4,6 +4,8 @@ Complete JSON examples for every standard error response. Use these as templates
 
 All examples assume the endpoint is `api.order.<verb>`. Replace `order` with the actual resource name.
 
+> **Note on `msgid`:** Each example shows the response echoing back a request's `msgid`. When documenting a real endpoint, use the same UUID convention — `msgid` is whatever the client supplied in the request body (POST/PATCH) or the `X-Request-Id` header (GET/DELETE).
+
 ---
 
 ## 400 — Bad Request
@@ -17,7 +19,7 @@ Missing required fields, invalid values, or malformed request body.
   "ts": "2026-05-28T10:31:12Z",
   "params": {
     "resmsgid": "c169a7a0-3ac4-11eb-b0a2-8d5c9f561887",
-    "msgid": null,
+    "msgid": "4a7f14c3-d61e-4d4f-be78-181834eeff6d",
     "status": "failed",
     "err": "ERR_ORDER_FIELDS_MISSING",
     "errmsg": "Required fields for create order are missing: name, type"
@@ -38,7 +40,7 @@ No token provided, or the token is expired/invalid.
   "ts": "2026-05-28T10:31:12Z",
   "params": {
     "resmsgid": "a21b3c40-4e12-11eb-a1b2-3c4d5e6f7890",
-    "msgid": null,
+    "msgid": "4a7f14c3-d61e-4d4f-be78-181834eeff6d",
     "status": "failed",
     "err": "ERR_UNAUTHORIZED",
     "errmsg": "Access denied. Authentication token is missing or invalid"
@@ -59,7 +61,7 @@ The user is authenticated but does not have permission for this action.
   "ts": "2026-05-28T10:31:12Z",
   "params": {
     "resmsgid": "b32c4d50-5f23-11eb-c2d3-4e5f6a7b8c90",
-    "msgid": null,
+    "msgid": "4a7f14c3-d61e-4d4f-be78-181834eeff6d",
     "status": "failed",
     "err": "ERR_FORBIDDEN",
     "errmsg": "You do not have permission to update this order"
@@ -80,7 +82,7 @@ The resource ID in the URL does not match any existing resource.
   "ts": "2026-05-28T10:31:12Z",
   "params": {
     "resmsgid": "5b4f0b33-3941-4c18-b8bf-123c2e0348e6",
-    "msgid": null,
+    "msgid": "4a7f14c3-d61e-4d4f-be78-181834eeff6d",
     "status": "failed",
     "err": "ERR_ORDER_NOT_FOUND",
     "errmsg": "Order does not exist. Invalid order ID: ord_999999"
@@ -101,7 +103,7 @@ The HTTP method used is not supported on this endpoint.
   "ts": "2026-05-28T10:31:12Z",
   "params": {
     "resmsgid": "d54e6f70-7a34-11eb-e4f5-6a7b8c9d0e12",
-    "msgid": null,
+    "msgid": "4a7f14c3-d61e-4d4f-be78-181834eeff6d",
     "status": "failed",
     "err": "ERR_METHOD_NOT_ALLOWED",
     "errmsg": "GET method is not supported for this endpoint. Use POST"
@@ -122,7 +124,7 @@ The request conflicts with the current state of the resource — typically a sta
   "ts": "2026-05-28T10:31:12Z",
   "params": {
     "resmsgid": "e65f7a80-8b45-11eb-f5a6-7b8c9d0e1f23",
-    "msgid": null,
+    "msgid": "4a7f14c3-d61e-4d4f-be78-181834eeff6d",
     "status": "failed",
     "err": "ERR_VERSION_CONFLICT",
     "errmsg": "Resource has been modified. Fetch the latest version and retry"
@@ -143,7 +145,7 @@ A resource with the same idempotency key or unique constraint already exists.
   "ts": "2026-05-28T10:31:12Z",
   "params": {
     "resmsgid": "e76f8a90-9c56-11eb-a6b7-8c9d0e1f2a34",
-    "msgid": null,
+    "msgid": "4a7f14c3-d61e-4d4f-be78-181834eeff6d",
     "status": "failed",
     "err": "ERR_ORDER_DUPLICATE",
     "errmsg": "An order with the same idempotency key already exists"
@@ -164,7 +166,7 @@ The client has sent too many requests in a given time window.
   "ts": "2026-05-28T10:31:12Z",
   "params": {
     "resmsgid": "f76a8b90-9c56-11eb-a6b7-8c9d0e1f2a34",
-    "msgid": null,
+    "msgid": "4a7f14c3-d61e-4d4f-be78-181834eeff6d",
     "status": "failed",
     "err": "ERR_RATE_LIMIT_EXCEEDED",
     "errmsg": "Rate limit exceeded. Retry after 30 seconds"
@@ -185,7 +187,7 @@ An unexpected error occurred on the server. Never expose stack traces or interna
   "ts": "2026-05-28T10:31:12Z",
   "params": {
     "resmsgid": "f234a6f0-3ac4-11eb-b0a2-8d5c9f561887",
-    "msgid": null,
+    "msgid": "4a7f14c3-d61e-4d4f-be78-181834eeff6d",
     "status": "failed",
     "err": "ERR_INTERNAL_SERVER_ERROR",
     "errmsg": "Something went wrong. Please try again."
@@ -206,7 +208,7 @@ An upstream dependency returned an invalid response.
   "ts": "2026-05-28T10:31:12Z",
   "params": {
     "resmsgid": "a87b9ca0-ad67-11eb-b7c8-9d0e1f2a3b45",
-    "msgid": null,
+    "msgid": "4a7f14c3-d61e-4d4f-be78-181834eeff6d",
     "status": "failed",
     "err": "ERR_BAD_GATEWAY",
     "errmsg": "Upstream service returned an invalid response"
@@ -227,7 +229,7 @@ The server is temporarily unable to handle the request.
   "ts": "2026-05-28T10:31:12Z",
   "params": {
     "resmsgid": "b98cada0-be78-11eb-c8d9-0e1f2a3b4c56",
-    "msgid": null,
+    "msgid": "4a7f14c3-d61e-4d4f-be78-181834eeff6d",
     "status": "failed",
     "err": "ERR_SERVICE_UNAVAILABLE",
     "errmsg": "Service is temporarily unavailable. Please retry after some time"
@@ -248,7 +250,7 @@ An upstream dependency did not respond within the expected time.
   "ts": "2026-05-28T10:31:12Z",
   "params": {
     "resmsgid": "ca9debe0-cf89-11eb-d9ea-1f2a3b4c5d67",
-    "msgid": null,
+    "msgid": "4a7f14c3-d61e-4d4f-be78-181834eeff6d",
     "status": "failed",
     "err": "ERR_GATEWAY_TIMEOUT",
     "errmsg": "Upstream service did not respond in time"

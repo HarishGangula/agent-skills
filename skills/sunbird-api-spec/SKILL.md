@@ -167,10 +167,16 @@ If the user has endpoint-specific custom headers, ask for them before generating
 
 ### Request Body
 
-Wrap the payload in a `request` envelope, with the resource name as the inner key:
+Every request body uses the full Sunbird envelope — it mirrors the response envelope so the same shape works in both directions. Wrap the actual payload inside `request`, with the **singular resource name** as the inner key (see Naming Rules #9).
 
 ```json
 {
+  "id": "api.<resource>.<verb>",
+  "ver": "<api_version>",
+  "ts": "<ISO_8601_timestamp>",
+  "params": {
+    "msgid": "<client_generated_uuid>"
+  },
   "request": {
     "<resource>": {
       "field1": "value1",
@@ -180,10 +186,28 @@ Wrap the payload in a `request` envelope, with the resource name as the inner ke
 }
 ```
 
+#### Envelope Field Reference
+
+| Field | Type | Required | Purpose |
+|---|---|---|---|
+| `id` | string | Yes | Endpoint identifier in dot-notation. Must match the URL (`api.order.create` ↔ `/orders/v1/create`). |
+| `ver` | string | Yes | API version (e.g., `"1.0"`) — must match the version in the URL |
+| `ts` | string | Yes | Client timestamp in ISO 8601 format (e.g., `2024-04-10T16:10:50+05:30` or `2026-05-28T10:30:45Z`) |
+| `params.msgid` | string (UUID) | Yes | Client-generated UUID for this request. The server echoes it back in `response.params.msgid` for end-to-end traceability. |
+| `request` | object | Yes | The actual payload. Contains the resource object for write operations, or filters/sort/fields for search. |
+
+> **Why the full envelope?** Sunbird treats request and response symmetrically. The same logging, tracing, and version checks apply in both directions. Clients that generate `msgid` per request can correlate any failure end-to-end across logs.
+
 **Example — Create an order:**
 
 ```json
 {
+  "id": "api.order.create",
+  "ver": "1.0",
+  "ts": "2026-05-28T10:30:45+05:30",
+  "params": {
+    "msgid": "4a7f14c3-d61e-4d4f-be78-181834eeff6d"
+  },
   "request": {
     "order": {
       "name": "Bulk Office Supplies",
@@ -199,6 +223,12 @@ Wrap the payload in a `request` envelope, with the resource name as the inner ke
 
 ```json
 {
+  "id": "api.order.update",
+  "ver": "1.0",
+  "ts": "2026-05-28T10:35:18+05:30",
+  "params": {
+    "msgid": "5b8a25d4-e72f-5e5a-cf89-292945ffaa7e"
+  },
   "request": {
     "order": {
       "versionKey": "1607631885207",
@@ -213,10 +243,16 @@ Wrap the payload in a `request` envelope, with the resource name as the inner ke
 
 ### Search Request Body
 
-For `search` endpoints, use this standard shape:
+For `search` endpoints, the envelope is identical — only the `request` payload changes. Use this standard shape inside `request`:
 
 ```json
 {
+  "id": "api.order.search",
+  "ver": "1.0",
+  "ts": "2026-05-28T10:32:01+05:30",
+  "params": {
+    "msgid": "6c9b36e5-f83a-6f6b-da9a-3a3a56aabb8f"
+  },
   "request": {
     "filters": {
       "status": "active",
@@ -231,7 +267,7 @@ For `search` endpoints, use this standard shape:
 }
 ```
 
-Field reference:
+`request` payload field reference:
 
 | Field | Type | Purpose |
 |---|---|---|
@@ -240,6 +276,8 @@ Field reference:
 | `fields` | array | Whitelist of fields to return; omit for all fields |
 | `limit` | int | Page size, default 25, max 100 |
 | `offset` | int | Number of records to skip, default 0 |
+
+> **Body-less requests (`GET` and `DELETE`):** `read` and `delete` endpoints use the HTTP method + URL alone and have no request body. `msgid` traceability for those is supported via the `X-Request-Id` header instead.
 
 ### Path Parameters
 
@@ -286,7 +324,7 @@ Every response — success or failure — follows this structure:
 | Field | Type | Purpose |
 |---|---|---|
 | `id` | string | API endpoint identifier in dot-notation: `api.<resource>.<verb>`. Must match the URL. |
-| `ver` | string | API version (e.g., `"1.0"`, `"v1"`) |
+| `ver` | string | API version (e.g., `"1.0"`) |
 | `ts` | string | Server timestamp in ISO 8601 UTC |
 | `params.resmsgid` | string (UUID) | Unique ID for **this response** — used for log correlation |
 | `params.msgid` | string (UUID) \| null | Echoes the request's `msgid` if the client sent one, else `null` |
@@ -321,7 +359,7 @@ The collection key is the **plural resource name** (`orders`, `users`, `assessme
   "ts": "2026-05-28T10:30:45Z",
   "params": {
     "resmsgid": "3be02c4b-3324-41a3-afd8-60f6be0584d2",
-    "msgid": null,
+    "msgid": "4a7f14c3-d61e-4d4f-be78-181834eeff6d",
     "err": null,
     "status": "successful",
     "errmsg": null
@@ -422,6 +460,12 @@ Every endpoint in the final spec must follow this exact structure. Use this as t
 
 ```json
 {
+  "id": "api.order.create",
+  "ver": "1.0",
+  "ts": "2026-05-28T10:30:45+05:30",
+  "params": {
+    "msgid": "4a7f14c3-d61e-4d4f-be78-181834eeff6d"
+  },
   "request": {
     "order": {
       "name": "Bulk Office Supplies",
@@ -449,7 +493,7 @@ Every endpoint in the final spec must follow this exact structure. Use this as t
   "ts": "2026-05-28T10:30:45Z",
   "params": {
     "resmsgid": "3be02c4b-3324-41a3-afd8-60f6be0584d2",
-    "msgid": null,
+    "msgid": "4a7f14c3-d61e-4d4f-be78-181834eeff6d",
     "err": null,
     "status": "successful",
     "errmsg": null
@@ -488,6 +532,12 @@ curl -X POST 'https://api.example.com/orders/v1/create' \
   -H 'Content-Type: application/json' \
   -H 'Authorization: Bearer <token>' \
   -d '{
+    "id": "api.order.create",
+    "ver": "1.0",
+    "ts": "2026-05-28T10:30:45+05:30",
+    "params": {
+      "msgid": "4a7f14c3-d61e-4d4f-be78-181834eeff6d"
+    },
     "request": {
       "order": {
         "name": "Bulk Office Supplies",
@@ -516,6 +566,7 @@ When designing or reviewing, watch for these — they indicate the spec is drift
 - Timestamps in formats other than ISO 8601 UTC
 - `id` field in the response not matching the URL (`api.order.create` vs `/orders/v1/create`)
 - Singular resource name in the URL (e.g., `/order/v1/create`) or plural in the API ID (e.g., `api.orders.create`) — see Naming Rules #9
+- Request body missing `id`, `ver`, `ts`, or `params.msgid` — the full envelope is required, not just `request`
 
 ## Verification Checklist
 
@@ -535,6 +586,8 @@ Before delivering a spec, confirm each:
 - [ ] Auth requirements stated per endpoint, including role/permission notes
 - [ ] Non-default headers (`X-Channel-Id`, `Idempotency-Key`, etc.) are documented where used
 - [ ] Resource is **plural** in URLs and **singular** in API IDs, request bodies, and single-item response keys (Naming Rules #9)
+- [ ] Every request body (for POST/PATCH endpoints) wraps the payload in the full envelope: `id`, `ver`, `ts`, `params.msgid`, `request`
+- [ ] Request `id` matches response `id` matches URL (`api.order.create` everywhere)
 
 ## Reference Files
 
