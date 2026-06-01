@@ -591,5 +591,13 @@ Before delivering a spec, confirm each:
 
 ## Reference Files
 
+### Always read when applicable
+
 - [`references/error-catalog.md`](references/error-catalog.md) — Full JSON examples for every standard error response. Read this when filling in the **Error Responses** section of an endpoint.
 - [`references/example-full-spec.md`](references/example-full-spec.md) — A complete worked example: an "Order" resource with all CRUD + search endpoints documented end-to-end. Read this when you want a concrete reference for what a finished spec looks like.
+
+### Optional extensions — read only when the user asks
+
+The base skill above covers the standard Sunbird API design (URL pattern, request/response envelope, CRUD + search, standard errors). The files below extend it for specific patterns. **Do not surface these proactively** — read them only when the user explicitly requests the corresponding capability.
+
+- [`references/state-workflow.md`](references/state-workflow.md) — Draft → Review → Live → Retired state machine, the `review`/`publish`/`reject`/`retire` transition endpoints, and the `ERR_INVALID_STATE_TRANSITION` error. Read this **only when the user explicitly says** their resource needs a review/approval lifecycle, mentions Draft/Review/Live/Retired states, or asks about `publish`/`review`/`reject`/`retire` endpoints. For plain CRUD designs, ignore this file.
