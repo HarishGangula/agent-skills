@@ -1,6 +1,11 @@
 ---
 name: css-code-quality
 description: Review, refactor, and optimize CSS/SCSS for best practices. Use this skill whenever the user wants to review CSS, refactor stylesheets, clean up styles, enforce CSS conventions, or asks about CSS best practices, code smells, or "is this CSS good". Trigger on phrases like "review my CSS", "refactor this stylesheet", "clean up these styles", "check my CSS", "optimize this CSS", "why isn't this style applying", or when a .css/.scss file or a block of CSS is shared for feedback — even if the word "review" isn't used. Also trigger when the user shares inline styles, hardcoded colors, px-heavy sizing, or `!important` and asks whether it's okay. Covers plain CSS, SCSS, and framework contexts (Tailwind, Bootstrap, Angular Material).
+license: MIT
+metadata:
+  author: Harish Kumar Gangula
+  version: "1.0"
+  last_updated: "2026-06-03"
 ---
 
 # CSS Code Quality

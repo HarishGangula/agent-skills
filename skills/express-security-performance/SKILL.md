@@ -1,6 +1,11 @@
 ---
 name: express-security-performance
 description: Review, refactor, and harden Node.js + Express backends for security and performance best practices. Use this skill whenever the user wants to audit, review, secure, harden, or speed up an Express/Node backend, asks "is my Express app secure", "review my Node backend", "check for security issues", "make this API faster", or shares Express server code, route handlers, middleware, or an app.js/server.js/index.js for feedback — even if they don't say "review". Also trigger when the user mentions Helmet, rate limiting, CORS, cookies/sessions, JWT, input validation, dependency vulnerabilities, TLS, clustering, compression, or production-readiness of an Express service. Grounded in the official Express production security and performance best practices guides.
+license: MIT
+metadata:
+  author: Harish Kumar Gangula
+  version: "1.0"
+  last_updated: "2026-06-03"
 ---
 
 # Express Security & Performance
