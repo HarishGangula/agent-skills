@@ -2,9 +2,9 @@
 
 ## Overview
 
-**Never hardcode color values** (`#3a3a3a`, `rgb(...)`, `hsl(...)`, named colors) directly in rules or inline. Define them once as variables/tokens and reference them everywhere. Hardcoded colors mean a rebrand or a dark-mode pass becomes a find-and-replace across the codebase, with no guarantee `#fff` in one file means the same thing as `#FFFFFF` in another.
+**Never hardcode color values** (`#3a3a3a`, `rgb(...)`, `hsl(...)`, named colors) directly in rules or inline. Define them once as variables/tokens and reference them everywhere. Hardcoded colors mean a rebrand or dark-mode pass becomes a find-and-replace across the codebase, with no guarantee `#fff` in one file means the same as `#FFFFFF` in another.
 
-If a token system already exists, **conform to it** — match its naming and layering. If none exists, **propose one** following W3C CSS Custom Properties conventions.
+If a token system exists, **conform to it** — match its naming and layering. If none exists, **propose one** following W3C CSS Custom Properties conventions.
 
 ### Recommended token structure (when proposing one)
 

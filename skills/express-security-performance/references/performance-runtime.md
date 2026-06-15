@@ -2,11 +2,11 @@
 
 ## Overview
 
-**Never block the event loop, compress responses, and keep heavy work off the main thread.** Node is single-threaded for your JavaScript; one synchronous, CPU-heavy, or blocking call stalls *every* concurrent request. The official Express performance guidance centers on this:
+**Never block the event loop, compress responses, keep heavy work off the main thread.** Node is single-threaded for your JavaScript; one synchronous, CPU-heavy, or blocking call stalls *every* concurrent request. The official Express performance guidance centers on this:
 
 1. **Use asynchronous, non-blocking I/O — never the sync variants in a request path.** `fs.readFileSync`, `crypto.pbkdf2Sync`, `JSON.parse` of a huge payload, synchronous DB drivers — each blocks the event loop. Use the async/promise versions. Sync calls are acceptable only at startup (e.g. loading config once before `listen`), never per-request.
 
-2. **Gzip/Brotli compression.** Compressing responses cuts payload size dramatically. For high-traffic production, do it at the reverse proxy (nginx) rather than in Node — it's more efficient. For lower traffic or when there's no proxy, use the `compression` middleware:
+2. **Gzip/Brotli compression.** Compressing responses cuts payload size dramatically. For high-traffic production, do it at the reverse proxy (nginx) rather than in Node — more efficient. For lower traffic or no proxy, use the `compression` middleware:
 
    ```js
    const compression = require('compression');
@@ -15,11 +15,11 @@
 
 3. **Don't do heavy computation in the request handler.** CPU-bound work (image processing, large crypto, big aggregations, report generation) blocks the loop. Offload to a worker thread, a queue/background job, or a separate service.
 
-4. **Avoid redundant work per request.** Compile regexes, read config, and build static objects once at module load, not inside the handler. Cache expensive-but-stable results.
+4. **Avoid redundant work per request.** Compile regexes, read config, build static objects once at module load, not inside the handler. Cache expensive-but-stable results.
 
 ## When to Use
 
-Apply to any handler that touches the filesystem, does crypto, parses/serializes large data, runs loops over big collections, or makes blocking calls. Also whenever response payloads are sizeable (JSON lists, HTML).
+Any handler that touches the filesystem, does crypto, parses/serializes large data, runs loops over big collections, or makes blocking calls. Also whenever response payloads are sizeable (JSON lists, HTML).
 
 ## Common Rationalizations
 

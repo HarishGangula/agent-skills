@@ -1,6 +1,6 @@
 # Additional Best Practices
 
-These are the suggested additions beyond the four core rules. Same spirit: maintainability, scalability, accessibility. Apply with judgment — most are Warnings or Nits, not Blockers.
+Suggested additions beyond the four core rules. Same spirit: maintainability, scalability, accessibility. Apply with judgment — most are Warnings or Nits, not Blockers.
 
 ## Overview
 

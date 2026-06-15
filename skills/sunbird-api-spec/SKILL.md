@@ -12,36 +12,36 @@ metadata:
 
 ## Overview
 
-Design and document RESTful APIs that follow the Sunbird convention — a single URL pattern, a single request/response envelope, predictable error formats, and consistent naming. The output of this skill is either a design proposal or a finished API documentation page that a backend engineer can implement and a frontend engineer can consume without ambiguity.
+Design and document RESTful APIs following Sunbird convention — one URL pattern, one request/response envelope, predictable error formats, consistent naming. Output is either a design proposal or finished API doc page a backend engineer can implement and a frontend engineer can consume without ambiguity.
 
 ## When to Use
 
 - Designing new API endpoints for a feature or requirement
-- Producing formal API documentation (Postman-style reference or markdown spec)
-- Revising existing APIs to bring them into the Sunbird convention
+- Producing formal API docs (Postman-style reference or markdown spec)
+- Revising existing APIs into Sunbird convention
 - Reviewing an API implementation for compliance with this standard
 - Defining contracts between frontend, backend, or microservices
 
 ## Workflow
 
-Follow these steps in order. Do not skip the clarification step — guessing on resource names or auth model leads to rework.
+Follow in order. Do not skip clarification — guessing on resource names or auth model leads to rework.
 
 ### 1. Clarify the requirement
 
-Before writing any spec, confirm with the user:
+Before writing spec, confirm with user:
 
-- **Resource(s)** — what domain entity (or entities) the APIs manage. Use a single, lowercase noun (e.g., `order`, `assessment`, `enrolment`).
+- **Resource(s)** — domain entity (entities) the APIs manage. Use a single lowercase noun (e.g., `order`, `assessment`, `enrolment`).
 - **Actions needed** — which standard verbs apply (`create`, `read`, `update`, `delete`, `list`, `search`) and any domain-specific verbs (`publish`, `retire`, `flag`, etc.).
-- **Auth model** — same for every endpoint, or does it vary per action? Are there role-based restrictions to document?
-- **Tenant or channel scoping** — do any endpoints require `X-Channel-Id`, `X-Tenant-Id`, or similar headers?
-- **ID format** — UUIDs, prefixed IDs (`ord_...`), or something else?
-- **Output format** — markdown spec, Postman-style reference, or just inline JSON examples? Default to a markdown spec saved as a file unless the user says otherwise.
+- **Auth model** — same for every endpoint, or varies per action? Role-based restrictions to document?
+- **Tenant or channel scoping** — do any endpoints need `X-Channel-Id`, `X-Tenant-Id`, or similar headers?
+- **ID format** — UUIDs, prefixed IDs (`ord_...`), or other?
+- **Output format** — markdown spec, Postman-style reference, or inline JSON examples? Default to markdown spec saved as a file unless user says otherwise.
 
-If the requirement is ambiguous on any of the above, ask before generating endpoints.
+If ambiguous on any above, ask before generating endpoints.
 
 ### 2. Enumerate endpoints first
 
-Produce a single table listing every endpoint *before* going deep on any one. This gives the user a chance to correct the shape before details are filled in.
+Produce one table listing every endpoint *before* going deep on any one. Lets user correct the shape before details are filled in.
 
 | # | Method | URL | API ID | Purpose |
 |---|---|---|---|---|
@@ -55,11 +55,11 @@ Wait for confirmation or corrections, then proceed.
 
 ### 3. Document each endpoint
 
-For every endpoint in the list, produce the full endpoint block — see the **Endpoint Documentation Template** section below for the exact structure.
+For every endpoint in the list, produce the full endpoint block — see **Endpoint Documentation Template** below for exact structure.
 
 ### 4. Add cross-cutting sections
 
-After the endpoints, append:
+After endpoints, append:
 
 - A **headers reference** section if any non-default headers are used
 - An **error codes reference** table consolidating every `err` code used across endpoints
@@ -67,7 +67,7 @@ After the endpoints, append:
 
 ### 5. Save and present
 
-Write the document to `/mnt/user-data/outputs/<feature>-api-spec.md` and call `present_files` so the user can download it. For very small specs (one or two endpoints), inline markdown is acceptable instead.
+Write document to `/mnt/user-data/outputs/<feature>-api-spec.md` and call `present_files` so user can download it. For very small specs (one or two endpoints), inline markdown is acceptable.
 
 ---
 
@@ -89,7 +89,7 @@ Write the document to `/mnt/user-data/outputs/<feature>-api-spec.md` and call `p
 
 ### Verb to HTTP Method Mapping
 
-Use **single, lowercase words** for verbs. The path states the action; the HTTP method enforces semantics.
+Use **single, lowercase words** for verbs. Path states the action; HTTP method enforces semantics.
 
 **Standard CRUD verbs:**
 
@@ -102,9 +102,9 @@ Use **single, lowercase words** for verbs. The path states the action; the HTTP 
 | `search` | `POST` | Search with filters, sort, pagination | `POST /orders/v1/search` |
 | `delete` | `DELETE` | Remove a resource | `DELETE /orders/v1/delete/{orderId}` |
 
-> **Why `POST` for `list` and `search`?** Filters in Sunbird often include nested structures and arrays. `POST` keeps the URL clean and avoids query-string length limits.
+> **Why `POST` for `list` and `search`?** Sunbird filters often include nested structures and arrays. `POST` keeps URL clean and avoids query-string length limits.
 >
-> **Why `PATCH` for `update`?** Sunbird convention is partial update. Use `PUT` only if the user explicitly wants full-replacement semantics.
+> **Why `PATCH` for `update`?** Sunbird convention is partial update. Use `PUT` only if user explicitly wants full-replacement semantics.
 
 **Domain-specific verbs** — extend beyond CRUD when the business domain requires it:
 
@@ -122,15 +122,15 @@ Use **single, lowercase words** for verbs. The path states the action; the HTTP 
 
 ### Naming Rules
 
-1. **Use verbs in the URL.** The path states the action explicitly. Do not rely on the HTTP method alone to convey intent.
+1. **Use verbs in the URL.** Path states the action explicitly. Do not rely on HTTP method alone to convey intent.
 2. **One verb = one responsibility.** Each endpoint does exactly one thing. `flag` only flags; `flag/accept` only accepts a flag.
 3. **Lowercase, single-word verbs.** Use `create`, `publish`, `retire`. No hyphens or underscores in verbs.
-4. **Compound actions use sub-verb nesting.** When a verb has variants, nest them under the parent verb: `flag/accept`, `flag/reject`, `upload/url`. The sub-verb is part of the verb segment.
-5. **Resource ID is always last.** `{resourceId}` is the final path segment, never anywhere else.
+4. **Compound actions use sub-verb nesting.** When a verb has variants, nest under the parent verb: `flag/accept`, `flag/reject`, `upload/url`. Sub-verb is part of the verb segment.
+5. **Resource ID is always last.** `{resourceId}` is the final path segment, never elsewhere.
 6. **Collection-level actions omit the ID.** `create`, `list`, `search`, `import` operate on the collection and take no ID.
-7. **camelCase for path parameters and JSON fields.** Use `{orderId}`, not `{order_id}` or `{order-id}`. Never mix cases within a single response.
+7. **camelCase for path parameters and JSON fields.** Use `{orderId}`, not `{order_id}` or `{order-id}`. Never mix cases within one response.
 8. **Timestamps are ISO 8601 UTC.** Every date/time field uses `2026-05-28T10:30:45Z` format.
-9. **Singular vs plural — use both, consistently.** This is intentional, not a contradiction. The URL names the collection you act on; the API ID and body name the entity type.
+9. **Singular vs plural — use both, consistently.** Intentional, not a contradiction. URL names the collection you act on; API ID and body name the entity type.
 
    | Place | Form | Example |
    |---|---|---|
@@ -140,7 +140,7 @@ Use **single, lowercase words** for verbs. The path states the action; the HTTP 
    | Response `result` — single item | **singular** | `"result": { "order": { ... } }` |
    | Response `result` — collection (`list`/`search`) | **plural** | `"result": { "count": 142, "orders": [...] }` |
 
-   This matches the wider Sunbird ecosystem (`/content/v1/create` ↔ `api.content.create` ↔ `request.content`). Be consistent within a single spec — do not flip a resource between `order` and `orders` in the same role.
+   Matches the wider Sunbird ecosystem (`/content/v1/create` ↔ `api.content.create` ↔ `request.content`). Be consistent within one spec — do not flip a resource between `order` and `orders` in the same role.
 
 ---
 
@@ -158,16 +158,16 @@ Use **single, lowercase words** for verbs. The path states the action; the HTTP 
 
 | Header | Purpose |
 |---|---|
-| `X-Channel-Id` | Identifies the channel/tenant context for multi-tenant operations |
-| `X-Authenticated-User-Token` | User-scoped token (in addition to the platform `Authorization`) |
+| `X-Channel-Id` | Identifies channel/tenant context for multi-tenant operations |
+| `X-Authenticated-User-Token` | User-scoped token (in addition to platform `Authorization`) |
 | `X-Source` | Identifies the calling client/application |
-| `Idempotency-Key` | UUID supplied by the client to safely retry `create` requests without duplicating resources |
+| `Idempotency-Key` | UUID supplied by client to safely retry `create` requests without duplicating resources |
 
-If the user has endpoint-specific custom headers, ask for them before generating the doc.
+If user has endpoint-specific custom headers, ask before generating the doc.
 
 ### Request Body
 
-Every request body uses the full Sunbird envelope — it mirrors the response envelope so the same shape works in both directions. Wrap the actual payload inside `request`, with the **singular resource name** as the inner key (see Naming Rules #9).
+Every request body uses the full Sunbird envelope — mirrors the response envelope so the same shape works both directions. Wrap the payload inside `request`, with the **singular resource name** as inner key (see Naming Rules #9).
 
 ```json
 {
@@ -190,13 +190,13 @@ Every request body uses the full Sunbird envelope — it mirrors the response en
 
 | Field | Type | Required | Purpose |
 |---|---|---|---|
-| `id` | string | Yes | Endpoint identifier in dot-notation. Must match the URL (`api.order.create` ↔ `/orders/v1/create`). |
-| `ver` | string | Yes | API version (e.g., `"1.0"`) — must match the version in the URL |
+| `id` | string | Yes | Endpoint identifier in dot-notation. Must match URL (`api.order.create` ↔ `/orders/v1/create`). |
+| `ver` | string | Yes | API version (e.g., `"1.0"`) — must match version in URL |
 | `ts` | string | Yes | Client timestamp in ISO 8601 format (e.g., `2024-04-10T16:10:50+05:30` or `2026-05-28T10:30:45Z`) |
-| `params.msgid` | string (UUID) | Yes | Client-generated UUID for this request. The server echoes it back in `response.params.msgid` for end-to-end traceability. |
-| `request` | object | Yes | The actual payload. Contains the resource object for write operations, or filters/sort/fields for search. |
+| `params.msgid` | string (UUID) | Yes | Client-generated UUID for this request. Server echoes it back in `response.params.msgid` for end-to-end traceability. |
+| `request` | object | Yes | The payload. Contains the resource object for write operations, or filters/sort/fields for search. |
 
-> **Why the full envelope?** Sunbird treats request and response symmetrically. The same logging, tracing, and version checks apply in both directions. Clients that generate `msgid` per request can correlate any failure end-to-end across logs.
+> **Why the full envelope?** Sunbird treats request and response symmetrically. Same logging, tracing, and version checks apply both directions. Clients generating `msgid` per request can correlate any failure end-to-end across logs.
 
 **Example — Create an order:**
 
@@ -239,7 +239,7 @@ Every request body uses the full Sunbird envelope — it mirrors the response en
 }
 ```
 
-> **`versionKey` rule:** Every update request must include the `versionKey` returned by the most recent read. The server rejects updates with a stale or missing `versionKey` (responds with `409 CONFLICT`). This is Sunbird's optimistic concurrency mechanism.
+> **`versionKey` rule:** Every update request must include the `versionKey` returned by the most recent read. Server rejects updates with a stale or missing `versionKey` (responds `409 CONFLICT`). Sunbird's optimistic concurrency mechanism.
 
 ### Search Request Body
 
@@ -275,9 +275,9 @@ For `search` endpoints, the envelope is identical — only the `request` payload
 | `sort_by` | object | Map of field → `"asc"` or `"desc"` |
 | `fields` | array | Whitelist of fields to return; omit for all fields |
 | `limit` | int | Page size, default 25, max 100 |
-| `offset` | int | Number of records to skip, default 0 |
+| `offset` | int | Records to skip, default 0 |
 
-> **Body-less requests (`GET` and `DELETE`):** `read` and `delete` endpoints use the HTTP method + URL alone and have no request body. `msgid` traceability for those is supported via the `X-Request-Id` header instead.
+> **Body-less requests (`GET` and `DELETE`):** `read` and `delete` use HTTP method + URL alone, no request body. `msgid` traceability supported via `X-Request-Id` header instead.
 
 ### Path Parameters
 
@@ -292,7 +292,7 @@ PATCH /orders/v1/update/{orderId}
 
 ### Query Parameters
 
-Use query parameters **only** for read operations where the filter is trivial enough to fit cleanly in a URL (e.g., a single status flag). For anything richer, use `search` with a request body.
+Use query parameters **only** for read operations where the filter fits cleanly in a URL (e.g., a single status flag). For anything richer, use `search` with a request body.
 
 ---
 
@@ -323,20 +323,20 @@ Every response — success or failure — follows this structure:
 
 | Field | Type | Purpose |
 |---|---|---|
-| `id` | string | API endpoint identifier in dot-notation: `api.<resource>.<verb>`. Must match the URL. |
+| `id` | string | API endpoint identifier in dot-notation: `api.<resource>.<verb>`. Must match URL. |
 | `ver` | string | API version (e.g., `"1.0"`) |
 | `ts` | string | Server timestamp in ISO 8601 UTC |
 | `params.resmsgid` | string (UUID) | Unique ID for **this response** — used for log correlation |
-| `params.msgid` | string (UUID) \| null | Echoes the request's `msgid` if the client sent one, else `null` |
+| `params.msgid` | string (UUID) \| null | Echoes request's `msgid` if client sent one, else `null` |
 | `params.status` | string | `"successful"` or `"failed"` |
 | `params.err` | string \| null | Machine-readable error code (e.g., `"ERR_FIELDS_MISSING"`). `null` on success. |
 | `params.errmsg` | string \| null | Human-readable error description. `null` on success. |
 | `responseCode` | string | High-level status — see HTTP mapping below |
-| `result` | object | The actual response payload. Resource data on success, `{}` on failure. |
+| `result` | object | The response payload. Resource data on success, `{}` on failure. |
 
 ### Pagination in `result`
 
-For `list` and `search` responses, the `result` contains a count and a collection:
+For `list` and `search` responses, `result` contains a count and a collection:
 
 ```json
 "result": {
@@ -377,7 +377,7 @@ The collection key is the **plural resource name** (`orders`, `users`, `assessme
 
 ## Error Responses
 
-All errors use the same envelope. Only `responseCode`, `params.err`, `params.errmsg`, and HTTP status change. `result` is always `{}` on failure.
+All errors use the same envelope. Only `responseCode`, `params.err`, `params.errmsg`, and HTTP status change. `result` always `{}` on failure.
 
 ### HTTP Status → `responseCode` Mapping
 
@@ -397,7 +397,7 @@ All errors use the same envelope. Only `responseCode`, `params.err`, `params.err
 
 ### Standard Error Codes
 
-Use these `err` codes as defaults. Project-specific codes follow the same `ERR_<DOMAIN>_<DETAIL>` shape.
+Use these `err` codes as defaults. Project-specific codes follow the `ERR_<DOMAIN>_<DETAIL>` shape.
 
 | `err` code | HTTP | Meaning |
 |---|---|---|
@@ -417,7 +417,7 @@ Use these `err` codes as defaults. Project-specific codes follow the same `ERR_<
 
 ### Error Response Examples
 
-For full JSON examples of every error response listed above, see [`references/error-catalog.md`](references/error-catalog.md). Read that file when documenting a specific endpoint's error responses.
+For full JSON examples of every error response above, see [`references/error-catalog.md`](references/error-catalog.md). Read that file when documenting a specific endpoint's error responses.
 
 > **Security note for 500 errors:** Never expose stack traces, SQL fragments, or internal field names in `errmsg`. Use a generic `"Something went wrong. Please try again."` and rely on `resmsgid` for server-side log correlation.
 
@@ -425,7 +425,7 @@ For full JSON examples of every error response listed above, see [`references/er
 
 ## Endpoint Documentation Template
 
-Every endpoint in the final spec must follow this exact structure. Use this as the template when documenting each endpoint from step 3 of the workflow.
+Every endpoint in the final spec must follow this exact structure. Use as the template when documenting each endpoint from step 3 of the workflow.
 
 ```markdown
 ### <Action Name in Title Case>
@@ -553,7 +553,7 @@ curl -X POST 'https://api.example.com/orders/v1/create' \
 
 ## Red Flags
 
-When designing or reviewing, watch for these — they indicate the spec is drifting off-convention:
+When designing or reviewing, watch for these — they signal the spec is drifting off-convention:
 
 - Endpoints that return different shapes depending on conditions
 - Inconsistent error formats across endpoints
@@ -565,8 +565,8 @@ When designing or reviewing, watch for these — they indicate the spec is drift
 - `list` or `search` responses without a `count` field
 - Timestamps in formats other than ISO 8601 UTC
 - `id` field in the response not matching the URL (`api.order.create` vs `/orders/v1/create`)
-- Singular resource name in the URL (e.g., `/order/v1/create`) or plural in the API ID (e.g., `api.orders.create`) — see Naming Rules #9
-- Request body missing `id`, `ver`, `ts`, or `params.msgid` — the full envelope is required, not just `request`
+- Singular resource name in URL (e.g., `/order/v1/create`) or plural in API ID (e.g., `api.orders.create`) — see Naming Rules #9
+- Request body missing `id`, `ver`, `ts`, or `params.msgid` — full envelope is required, not just `request`
 
 ## Verification Checklist
 
@@ -593,11 +593,11 @@ Before delivering a spec, confirm each:
 
 ### Always read when applicable
 
-- [`references/error-catalog.md`](references/error-catalog.md) — Full JSON examples for every standard error response. Read this when filling in the **Error Responses** section of an endpoint.
-- [`references/example-full-spec.md`](references/example-full-spec.md) — A complete worked example: an "Order" resource with all CRUD + search endpoints documented end-to-end. Read this when you want a concrete reference for what a finished spec looks like.
+- [`references/error-catalog.md`](references/error-catalog.md) — Full JSON examples for every standard error response. Read when filling in the **Error Responses** section of an endpoint.
+- [`references/example-full-spec.md`](references/example-full-spec.md) — A complete worked example: an "Order" resource with all CRUD + search endpoints documented end-to-end. Read for a concrete reference of what a finished spec looks like.
 
 ### Optional extensions — read only when the user asks
 
-The base skill above covers the standard Sunbird API design (URL pattern, request/response envelope, CRUD + search, standard errors). The files below extend it for specific patterns. **Do not surface these proactively** — read them only when the user explicitly requests the corresponding capability.
+The base skill above covers standard Sunbird API design (URL pattern, request/response envelope, CRUD + search, standard errors). Files below extend it for specific patterns. **Do not surface these proactively** — read only when user explicitly requests the corresponding capability.
 
-- [`references/state-workflow.md`](references/state-workflow.md) — Draft → Review → Live → Retired state machine, the `review`/`publish`/`reject`/`retire` transition endpoints, and the `ERR_INVALID_STATE_TRANSITION` error. Read this **only when the user explicitly says** their resource needs a review/approval lifecycle, mentions Draft/Review/Live/Retired states, or asks about `publish`/`review`/`reject`/`retire` endpoints. For plain CRUD designs, ignore this file.
+- [`references/state-workflow.md`](references/state-workflow.md) — Draft → Review → Live → Retired state machine, the `review`/`publish`/`reject`/`retire` transition endpoints, and the `ERR_INVALID_STATE_TRANSITION` error. Read **only when user explicitly says** their resource needs a review/approval lifecycle, mentions Draft/Review/Live/Retired states, or asks about `publish`/`review`/`reject`/`retire` endpoints. For plain CRUD designs, ignore this file.

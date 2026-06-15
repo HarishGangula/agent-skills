@@ -1,6 +1,6 @@
 # Error Response Catalog
 
-Complete JSON examples for every standard error response. Use these as templates when documenting an endpoint's error responses — copy the relevant block and adjust `id`, `err`, and `errmsg` to fit the specific endpoint and condition.
+Complete JSON examples for every standard error response. Use as templates when documenting an endpoint's error responses — copy the relevant block and adjust `id`, `err`, and `errmsg` to fit the specific endpoint and condition.
 
 All examples assume the endpoint is `api.order.<verb>`. Replace `order` with the actual resource name.
 
@@ -31,7 +31,7 @@ Missing required fields, invalid values, or malformed request body.
 
 ## 401 — Unauthorized
 
-No token provided, or the token is expired/invalid.
+No token provided, or token is expired/invalid.
 
 ```json
 {
@@ -52,7 +52,7 @@ No token provided, or the token is expired/invalid.
 
 ## 403 — Forbidden
 
-The user is authenticated but does not have permission for this action.
+User is authenticated but lacks permission for this action.
 
 ```json
 {
@@ -73,7 +73,7 @@ The user is authenticated but does not have permission for this action.
 
 ## 404 — Resource Not Found
 
-The resource ID in the URL does not match any existing resource.
+Resource ID in the URL matches no existing resource.
 
 ```json
 {
@@ -94,7 +94,7 @@ The resource ID in the URL does not match any existing resource.
 
 ## 405 — Method Not Allowed
 
-The HTTP method used is not supported on this endpoint.
+HTTP method used is not supported on this endpoint.
 
 ```json
 {
@@ -115,7 +115,7 @@ The HTTP method used is not supported on this endpoint.
 
 ## 409 — Conflict (version conflict)
 
-The request conflicts with the current state of the resource — typically a stale `versionKey`.
+Request conflicts with the resource's current state — typically a stale `versionKey`.
 
 ```json
 {
@@ -136,7 +136,7 @@ The request conflicts with the current state of the resource — typically a sta
 
 ## 409 — Conflict (duplicate)
 
-A resource with the same idempotency key or unique constraint already exists.
+A resource with the same idempotency key or unique constraint exists.
 
 ```json
 {
@@ -157,7 +157,7 @@ A resource with the same idempotency key or unique constraint already exists.
 
 ## 429 — Too Many Requests
 
-The client has sent too many requests in a given time window.
+Client has sent too many requests in a given time window.
 
 ```json
 {
@@ -178,7 +178,7 @@ The client has sent too many requests in a given time window.
 
 ## 500 — Internal Server Error
 
-An unexpected error occurred on the server. Never expose stack traces or internal details — use a generic message and rely on `resmsgid` for log correlation.
+Unexpected server error. Never expose stack traces or internal details — use a generic message and rely on `resmsgid` for log correlation.
 
 ```json
 {
@@ -199,7 +199,7 @@ An unexpected error occurred on the server. Never expose stack traces or interna
 
 ## 502 — Bad Gateway
 
-An upstream dependency returned an invalid response.
+Upstream dependency returned an invalid response.
 
 ```json
 {
@@ -220,7 +220,7 @@ An upstream dependency returned an invalid response.
 
 ## 503 — Service Unavailable
 
-The server is temporarily unable to handle the request.
+Server temporarily unable to handle the request.
 
 ```json
 {
@@ -241,7 +241,7 @@ The server is temporarily unable to handle the request.
 
 ## 504 — Gateway Timeout
 
-An upstream dependency did not respond within the expected time.
+Upstream dependency did not respond within the expected time.
 
 ```json
 {

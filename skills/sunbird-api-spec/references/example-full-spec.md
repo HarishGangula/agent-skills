@@ -1,6 +1,6 @@
 # Example: Complete Order Resource API Spec
 
-This is a fully-worked reference showing what a finished Sunbird API spec looks like for a single resource with full CRUD + search. Use this as the target shape when documenting a new resource — match the section ordering, table style, and depth of detail.
+A fully-worked reference showing what a finished Sunbird API spec looks like for a single resource with full CRUD + search. Use as the target shape when documenting a new resource — match section ordering, table style, and depth of detail.
 
 ---
 
@@ -15,7 +15,7 @@ The Order Service manages purchase, transfer, and return orders for the platform
 
 ## Authentication
 
-All endpoints require a Bearer token in the `Authorization` header. Multi-tenant deployments additionally require `X-Channel-Id`.
+All endpoints require a Bearer token in the `Authorization` header. Multi-tenant deployments also require `X-Channel-Id`.
 
 ## Endpoints
 
@@ -220,7 +220,7 @@ curl -X GET 'https://api.example.com/orders/v1/read/ord_2026052810304500001' \
   -H 'X-Request-Id: 9a2c69d8-2b6d-4c9e-fd2d-6d6d89dde9b2'
 ```
 
-> For body-less requests (GET, DELETE), use the `X-Request-Id` header to supply a UUID for traceability. The server echoes it in `response.params.msgid`.
+> For body-less requests (GET, DELETE), use the `X-Request-Id` header to supply a UUID for traceability. Server echoes it in `response.params.msgid`.
 
 ---
 

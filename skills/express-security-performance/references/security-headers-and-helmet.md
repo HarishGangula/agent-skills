@@ -2,7 +2,7 @@
 
 ## Overview
 
-**Use Helmet and disable `X-Powered-By`.** Express advertises itself by default (`X-Powered-By: Express`), which hands attackers a free fingerprint to target version-specific exploits. Beyond that, browsers enforce a set of HTTP response headers — Content-Security-Policy, HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy — that defend against XSS, clickjacking, MIME sniffing, and protocol downgrade. Setting these by hand is error-prone; [Helmet](https://helmetjs.github.io/) bundles sensible defaults in one line.
+**Use Helmet and disable `X-Powered-By`.** Express advertises itself by default (`X-Powered-By: Express`), handing attackers a free fingerprint to target version-specific exploits. Browsers also enforce a set of HTTP response headers — Content-Security-Policy, HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy — that defend against XSS, clickjacking, MIME sniffing, and protocol downgrade. Setting these by hand is error-prone; [Helmet](https://helmetjs.github.io/) bundles sensible defaults in one line.
 
 ```js
 const helmet = require('helmet');
@@ -19,7 +19,7 @@ Helmet's defaults are a baseline, not a finish line. The header that needs real 
 
 ## When to Use
 
-Apply to any Express app that serves responses to a browser, returns HTML, or sets cookies. For pure machine-to-machine JSON APIs the header set is smaller but `X-Powered-By` removal and HSTS still apply.
+Any Express app that serves responses to a browser, returns HTML, or sets cookies. For pure machine-to-machine JSON APIs the header set is smaller but `X-Powered-By` removal and HSTS still apply.
 
 ## Common Rationalizations
 
@@ -32,14 +32,14 @@ Apply to any Express app that serves responses to a browser, returns HTML, or se
 
 - No `helmet()` and no `app.disable('x-powered-by')` — response carries `X-Powered-By: Express`.
 - `helmet({ contentSecurityPolicy: false })` — CSP deliberately disabled.
-- Security headers set inline in individual route handlers (inconsistent coverage) rather than as app-level middleware.
+- Security headers set inline in individual route handlers (inconsistent coverage) rather than app-level middleware.
 - `Access-Control-Allow-Origin: *` combined with credentials (see transport-and-config.md).
 
 ## Verification
 
 - `curl -I https://your-app/` and inspect headers: confirm `X-Powered-By` is absent and `Content-Security-Policy`, `Strict-Transport-Security`, `X-Content-Type-Options: nosniff` are present.
-- Load the app in a browser with devtools open; check the console for CSP violations and tune directives to allow only the origins/inline-hashes you actually need.
-- Confirm Helmet middleware is registered **early**, before routes, so every response is covered.
+- Load the app in a browser with devtools open; check console for CSP violations and tune directives to allow only the origins/inline-hashes you actually need.
+- Confirm Helmet middleware registered **early**, before routes, so every response is covered.
 
 ## Before / After
 

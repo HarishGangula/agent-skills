@@ -1,6 +1,6 @@
 # Runtime validation: zod vs ajv vs valibot
 
-Read this before recommending any validator. The libraries overlap but fit different contexts — recommend by context, not by personal default. **Never recommend introducing a second validator into a codebase that already standardized on one** — instead, the finding becomes "use the existing validator consistently here."
+Read before recommending any validator. The libraries overlap but fit different contexts — recommend by context, not by personal default. **Never recommend introducing a second validator into a codebase that already standardized on one** — instead, the finding becomes "use the existing validator consistently here."
 
 ## Decision table
 
@@ -19,5 +19,5 @@ Read this before recommending any validator. The libraries overlap but fit diffe
 ## Notes for the finding
 
 - ajv + zod solve overlapping problems; if the repo's request shapes are already expressed as JSON Schema (e.g. an OpenAPI/Sunbird-style envelope spec), ajv is the natural fit and lets the schema stay the shared contract across services.
-- zod shines for in-app boundaries (forms, env parsing, internal function inputs) and for ergonomic `.transform()` / `.refine()` that are clumsy in raw JSON Schema.
+- zod shines for in-app boundaries (forms, env parsing, internal function inputs) and for ergonomic `.transform()` / `.refine()` clumsy in raw JSON Schema.
 - If recommending ajv in a TS project, mention `json-schema-to-ts` or ajv's typing helpers so types aren't lost.

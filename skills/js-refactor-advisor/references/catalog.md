@@ -5,7 +5,7 @@ Per-category detail and before/after illustrations. Read the relevant section wh
 ## Dates
 
 **dayjs** — tiny (~2KB), moment-like API, immutable. Default recommendation for general date handling.
-**date-fns** — pure functions, fully tree-shakeable; better when you use only a few functions or want to ship the minimum.
+**date-fns** — pure functions, fully tree-shakeable; better when using only a few functions or shipping the minimum.
 **moment.js** — 🟢 flag as legacy: large, mutable, in maintenance mode. Recommend migrating to dayjs (near drop-in) or date-fns.
 
 Findings:
@@ -16,7 +16,7 @@ Findings:
 
 **p-limit** / **p-map** — cap concurrency on async work.
 
-- 🔴 **Unbounded `Promise.all`** — `await Promise.all(items.map(fetchThing))` over a large array fires every request at once: rate-limit hits, memory spikes, connection exhaustion. Recommend `pMap(items, fetchThing, { concurrency: 5 })` or a `p-limit` gate. This is one of the highest-value findings the skill produces.
+- 🔴 **Unbounded `Promise.all`** — `await Promise.all(items.map(fetchThing))` over a large array fires every request at once: rate-limit hits, memory spikes, connection exhaustion. Recommend `pMap(items, fetchThing, { concurrency: 5 })` or a `p-limit` gate. One of the highest-value findings the skill produces.
 - 🟡 **Manual batching loops** — hand-written chunk-and-await loops to limit concurrency reimplement p-map poorly.
 
 ## HTTP
@@ -24,7 +24,7 @@ Findings:
 **native fetch** — available everywhere modern (Node 18+, all browsers).
 **ky** — tiny wrapper over fetch adding retries, timeouts, hooks, JSON by default.
 
-- 🟢 **axios for trivial requests** — if axios is used only for simple GET/POST with JSON, native fetch (or ky) removes the dependency. Don't push this if axios is used for interceptors, progress, or wide browser support needs.
+- 🟢 **axios for trivial requests** — if axios is used only for simple GET/POST with JSON, native fetch (or ky) removes the dependency. Don't push if axios is used for interceptors, progress, or wide browser support needs.
 - 🟡 **Hand-rolled retry/timeout wrappers** around fetch — recommend ky, which has these built in.
 
 ## Control flow
@@ -41,7 +41,7 @@ Findings:
 
 ## Smaller utilities
 
-- **nanoid** — 🔴 if `Math.random().toString(36).slice(2)` is used for IDs that need uniqueness (collision risk); 🟢 if it's a non-critical throwaway. Note `crypto.randomUUID()` is the native option when a UUID is acceptable.
+- **nanoid** — 🔴 if `Math.random().toString(36).slice(2)` is used for IDs needing uniqueness (collision risk); 🟢 if a non-critical throwaway. Note `crypto.randomUUID()` is the native option when a UUID is acceptable.
 - **clsx** / **classnames** — 🟡 messy conditional className building via template literals / array joins in React. `clsx('base', { active: isActive })` is clearer. clsx is the smaller of the two.
 - **mitt** / **nanoevents** — 🟡 hand-rolled event-emitter objects (`{ listeners: [], on(){}, emit(){} }`) in browser code. Tiny, tested replacements.
 - **zustand** / **valtio** — flag only, don't push. When `useReducer` + context boilerplate for global state has grown tangled, *mention* these as lighter-than-Redux options, leaving the call to the developer.

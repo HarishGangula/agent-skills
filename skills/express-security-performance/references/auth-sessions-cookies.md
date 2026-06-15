@@ -2,7 +2,7 @@
 
 ## Overview
 
-**Secure the session/credential layer: harden cookies, protect secrets, and throttle abuse.** Several distinct best practices live here:
+**Secure the session/credential layer: harden cookies, protect secrets, throttle abuse.** Several distinct best practices:
 
 1. **Cookie flags.** Any cookie carrying identity must set `httpOnly` (no JS access → blunts XSS theft), `secure` (HTTPS-only → no plaintext leak), and `sameSite` (`'lax'` or `'strict'` → CSRF mitigation). For sessions, also rename the default session cookie (`connect.sid` advertises express-session).
 
@@ -18,15 +18,15 @@
 
 2. **Don't use the default/in-memory session store in production.** The default `MemoryStore` leaks memory and doesn't scale across processes; use Redis or a DB-backed store.
 
-3. **Secrets out of source.** Session secrets, JWT signing keys, and DB passwords come from environment/secret manager, never committed. A leaked secret is a full compromise.
+3. **Secrets out of source.** Session secrets, JWT signing keys, DB passwords come from environment/secret manager, never committed. A leaked secret is a full compromise.
 
 4. **Rate-limit and slow brute force.** Login, password-reset, and token endpoints need rate limiting (`express-rate-limit`) to make credential stuffing impractical.
 
-5. **JWT hygiene** (if used): verify the algorithm explicitly (reject `alg: none` and algorithm-confusion), set short expiries, and don't put secrets in the payload (it's only base64, not encrypted).
+5. **JWT hygiene** (if used): verify the algorithm explicitly (reject `alg: none` and algorithm-confusion), set short expiries, don't put secrets in the payload (it's only base64, not encrypted).
 
 ## When to Use
 
-Apply to any app with login, sessions, cookies, API keys, or JWTs — i.e. anything with a notion of an authenticated user.
+Any app with login, sessions, cookies, API keys, or JWTs — anything with a notion of an authenticated user.
 
 ## Common Rationalizations
 
@@ -47,7 +47,7 @@ Apply to any app with login, sessions, cookies, API keys, or JWTs — i.e. anyth
 
 ## Verification
 
-- Inspect `Set-Cookie` in responses: confirm `HttpOnly; Secure; SameSite=...` are present on identity cookies.
+- Inspect `Set-Cookie` in responses: confirm `HttpOnly; Secure; SameSite=...` present on identity cookies.
 - Grep the repo for high-entropy strings and obvious secret names; confirm they come from `process.env`.
 - Confirm a non-memory session store is configured for production.
 - Hit the login route in a loop and confirm it starts returning 429.

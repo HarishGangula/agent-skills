@@ -10,38 +10,38 @@ metadata:
 
 # JS Refactor Advisor
 
-Review JavaScript/TypeScript code and produce **advisory findings**: places where the code can be simplified, made more correct, or made lighter. This skill **flags and recommends only** — it never rewrites the user's code or outputs a diff for them to apply. Each finding shows a short before/after *illustration* so the recommendation is concrete, but the decision to apply it stays with the developer.
+Review JavaScript/TypeScript code and produce **advisory findings**: places where code can be simplified, made more correct, or made lighter. **Flags and recommends only** — never rewrites code or outputs a diff to apply. Each finding shows a short before/after *illustration* to make the recommendation concrete; the decision to apply stays with the developer.
 
 ## Core philosophy: native first
 
-The single most important behavior of this skill is restraint. **Adding a dependency is a cost** — bundle size, supply-chain surface, version churn, onboarding burden. A finding must justify that cost.
+Most important behavior: restraint. **Adding a dependency is a cost** — bundle size, supply-chain surface, version churn, onboarding burden. A finding must justify that cost.
 
 Apply this decision ladder to every candidate:
 
-1. **Can modern native JS do it cleanly?** → recommend native. If the code *already* uses a library for something native now handles well, recommend *removing* that usage.
+1. **Can modern native JS do it cleanly?** → recommend native. If code *already* uses a library for something native now handles well, recommend *removing* that usage.
 2. **Is native awkward, verbose, or error-prone here?** → recommend a focused library.
-3. **Is the code already using a heavier library where a lighter/native option fits?** → recommend the swap.
-4. **Does the repo already standardize on a library for this job?** → recommend using *that* one consistently. Never introduce a second library that does the same thing (e.g. don't add zod to an ajv codebase).
+3. **Is code already using a heavier library where a lighter/native option fits?** → recommend the swap.
+4. **Does the repo already standardize on a library for this job?** → recommend using *that* one consistently. Never introduce a second library doing the same thing (e.g. don't add zod to an ajv codebase).
 
 Modern native JS has eaten a lot of Lodash. Before recommending Lodash (or flagging its removal), consult `references/native-vs-lodash.md`.
 
 ## Severity tiers
 
-Every finding is assigned exactly one tier. When output contains many findings (e.g. a repo scan), order them by tier so the developer fixes what matters first.
+Assign each finding exactly one tier. When output has many findings (e.g. repo scan), order by tier so the developer fixes what matters first.
 
-- **🔴 Correctness** — the current code can produce wrong results, crash, leak memory, or hit rate/resource limits. These are bugs waiting to happen, not style. Examples: `Promise.all` over a large `.map` with no concurrency cap, fragile manual date math across DST/timezones, validation gaps at a trust boundary, `JSON.parse(JSON.stringify())` deep-clone losing `Date`/`Map`/`undefined`.
-- **🟡 Maintainability / Simplification** — the code works but is harder to read or change than it needs to be. Examples: hand-rolled `groupBy`/`debounce`, deeply nested spread updates, nested switch/if chains on a discriminant, verbose `Date` formatting.
-- **🟢 Bundle / Dependency hygiene** — the code carries weight it doesn't need. Examples: full Lodash import for one function, moment.js (legacy/heavy), axios used only for trivial GETs, two libraries doing the same job.
+- **🔴 Correctness** — code can produce wrong results, crash, leak memory, or hit rate/resource limits. Bugs waiting to happen, not style. Examples: `Promise.all` over a large `.map` with no concurrency cap, fragile manual date math across DST/timezones, validation gaps at a trust boundary, `JSON.parse(JSON.stringify())` deep-clone losing `Date`/`Map`/`undefined`.
+- **🟡 Maintainability / Simplification** — works but harder to read or change than needed. Examples: hand-rolled `groupBy`/`debounce`, deeply nested spread updates, nested switch/if chains on a discriminant, verbose `Date` formatting.
+- **🟢 Bundle / Dependency hygiene** — carries weight it doesn't need. Examples: full Lodash import for one function, moment.js (legacy/heavy), axios used only for trivial GETs, two libraries doing the same job.
 
 ## How to run on each scope
 
-The finding logic is identical across scopes; only what you read changes.
+Finding logic is identical across scopes; only what you read changes.
 
 - **Snippet / single file** — analyze directly.
 - **Diff / PR** — focus on changed lines, but read enough surrounding context to judge correctly. Don't flag pre-existing issues outside the diff unless the change touches them.
-- **Whole repo** — prioritize hot/entry files and shared utilities. **Skip** `node_modules`, build/dist output, vendored/third-party code, and generated files. If findings are numerous, summarize counts per tier and show the top findings rather than an exhaustive dump.
+- **Whole repo** — prioritize hot/entry files and shared utilities. **Skip** `node_modules`, build/dist output, vendored/third-party code, generated files. If findings are numerous, summarize counts per tier and show top findings rather than an exhaustive dump.
 
-Before recommending a library swap, check the repo's `package.json` (and lockfile) — recommend libraries already present where possible, and note when a suggestion would add a new dependency.
+Before recommending a library swap, check the repo's `package.json` (and lockfile) — recommend libraries already present where possible, and note when a suggestion adds a new dependency.
 
 ## Output format
 
@@ -73,18 +73,18 @@ ALWAYS structure the report like this:
 ```
 
 Rules for the report:
-- Keep before/after snippets short — they illustrate, they are not patches to apply.
-- If you recommend *adding* a dependency, say so explicitly in **Note**. If you recommend *removing* one, say that too.
-- If nothing is worth flagging, say so plainly rather than inventing low-value findings. Noise destroys the value of a tiered report.
+- Keep before/after snippets short — they illustrate, not patches to apply.
+- If recommending *adding* a dependency, say so explicitly in **Note**. If recommending *removing* one, say that too.
+- If nothing is worth flagging, say so plainly rather than inventing low-value findings. Noise destroys a tiered report's value.
 - Don't recommend two libraries for the same job in one report.
 
 ## Library catalog
 
-Each entry lists what to look for, what to recommend, and the tier it usually lands in. Details, edge cases, and the native-first cutoffs are in the reference files — read them when a category is in play rather than relying on memory:
+Each entry lists what to look for, what to recommend, and the tier it usually lands in. Details, edge cases, and native-first cutoffs are in the reference files — read them when a category is in play rather than relying on memory:
 
 - `references/native-vs-lodash.md` — the "native has caught up" table; consult before any Lodash recommendation.
 - `references/validation.md` — the zod vs ajv vs valibot decision (read before recommending any validator).
-- `references/catalog.md` — full per-library detail for dates, async, HTTP, control flow, immutability, and the smaller utilities.
+- `references/catalog.md` — full per-library detail for dates, async, HTTP, control flow, immutability, smaller utilities.
 
 Quick index of what triggers a finding:
 
@@ -103,4 +103,4 @@ Quick index of what triggers a finding:
 | Event emitting | hand-rolled emitter objects in browser | **mitt** / **nanoevents** | 🟡 |
 | Global state (flag only) | tangled `useReducer` + context boilerplate | mention **zustand** / **valtio** as an option, don't push | 🟡 |
 
-When a category comes up, read its reference section before writing the finding — the cutoffs (e.g. *when* native beats Lodash, *which* validator fits) are what make the recommendation trustworthy.
+When a category comes up, read its reference section before writing the finding — the cutoffs (e.g. *when* native beats Lodash, *which* validator fits) make the recommendation trustworthy.

@@ -2,7 +2,7 @@
 
 Many Sunbird resources (content, datasets, frameworks, articles) follow a multi-state lifecycle rather than being immediately public on creation. This file documents the standard state machine and the endpoints that drive transitions between states.
 
-Use this reference whenever a resource needs more than just CRUD — when it must be reviewed, approved, published, or retired through a defined workflow.
+Use whenever a resource needs more than CRUD — when it must be reviewed, approved, published, or retired through a defined workflow.
 
 ---
 
@@ -26,10 +26,10 @@ Use this reference whenever a resource needs more than just CRUD — when it mus
 
 | State | Meaning | Visible to public? |
 |---|---|---|
-| **Draft** | Resource has been created and is being edited. Owner can update freely. | No |
-| **Review** | Resource has been submitted for review. Editing is locked; awaiting moderator decision. | No |
-| **Live** | Resource has been published. Publicly listed and searchable. | Yes |
-| **Retired** | Resource has been removed from public listings. Archived for record-keeping; not searchable. | No |
+| **Draft** | Created and being edited. Owner can update freely. | No |
+| **Review** | Submitted for review. Editing locked; awaiting moderator decision. | No |
+| **Live** | Published. Publicly listed and searchable. | Yes |
+| **Retired** | Removed from public listings. Archived for record-keeping; not searchable. | No |
 
 ## Transitions
 
@@ -48,7 +48,7 @@ Use this reference whenever a resource needs more than just CRUD — when it mus
 
 ## Endpoint Examples
 
-Each transition endpoint follows the standard Sunbird envelope. The resource ID is in the URL; the body carries any transition-specific data (reviewer comments, rejection reason, retirement note).
+Each transition endpoint follows the standard Sunbird envelope. Resource ID is in the URL; the body carries any transition-specific data (reviewer comments, rejection reason, retirement note).
 
 ### Review — submit Draft for review
 
@@ -262,11 +262,11 @@ A rejection must include a `rejectComment` so the owner knows what to fix.
 
 ## Error Responses for Workflow Endpoints
 
-In addition to the standard error codes (`ERR_UNAUTHORIZED`, `ERR_FORBIDDEN`, `ERR_<RESOURCE>_NOT_FOUND`, `ERR_VERSION_CONFLICT`, `ERR_INTERNAL_SERVER_ERROR`), workflow endpoints have one workflow-specific code:
+Besides the standard error codes (`ERR_UNAUTHORIZED`, `ERR_FORBIDDEN`, `ERR_<RESOURCE>_NOT_FOUND`, `ERR_VERSION_CONFLICT`, `ERR_INTERNAL_SERVER_ERROR`), workflow endpoints have one workflow-specific code:
 
 ### 409 — Invalid State Transition
 
-Triggered when a transition is invoked from a state that does not allow it (e.g., trying to publish a Draft directly, retiring an already-retired resource).
+Triggered when a transition is invoked from a state that does not allow it (e.g., publishing a Draft directly, retiring an already-retired resource).
 
 ```json
 {
@@ -285,7 +285,7 @@ Triggered when a transition is invoked from a state that does not allow it (e.g.
 }
 ```
 
-The `errmsg` should always state both the current state and the expected state so the client can present a clear message to the user.
+`errmsg` must state both current state and expected state so the client can present a clear message to the user.
 
 ### Common Per-Transition Errors
 
@@ -302,7 +302,7 @@ The `errmsg` should always state both the current state and the expected state s
 
 ## Documenting a Workflow-Enabled Resource
 
-When the resource being designed follows this lifecycle, the enumerate-endpoints table in step 2 of the SKILL.md workflow should include the transition endpoints alongside the CRUD endpoints. Example:
+When the resource follows this lifecycle, the enumerate-endpoints table in step 2 of the SKILL.md workflow must include the transition endpoints alongside CRUD endpoints. Example:
 
 | # | Method | URL | API ID | Purpose |
 |---|---|---|---|---|
@@ -315,13 +315,13 @@ When the resource being designed follows this lifecycle, the enumerate-endpoints
 | 7 | POST | `/articles/v1/reject/{articleId}` | `api.article.reject` | Reject Review → Draft |
 | 8 | POST | `/articles/v1/retire/{articleId}` | `api.article.retire` | Retire a Live article |
 
-Each transition endpoint is documented using the standard Endpoint Documentation Template from SKILL.md.
+Document each transition endpoint using the standard Endpoint Documentation Template from SKILL.md.
 
 ---
 
 ## Filtering by State
 
-`search` endpoints for workflow-enabled resources almost always need a `status` filter so callers can request just the Live ones (or just Drafts they own). Add `status` to the filters block:
+`search` endpoints for workflow-enabled resources almost always need a `status` filter so callers can request just Live ones (or just Drafts they own). Add `status` to the filters block:
 
 ```json
 {
@@ -333,4 +333,4 @@ Each transition endpoint is documented using the standard Endpoint Documentation
 }
 ```
 
-When no `status` filter is supplied, the server's default for a workflow-enabled resource is to return only `Live` records to anonymous callers and only `Live` + the caller's own `Draft`/`Review` records to authenticated callers. State this default explicitly in the search endpoint's documentation.
+When no `status` filter is supplied, the server's default for a workflow-enabled resource: return only `Live` records to anonymous callers, and `Live` + the caller's own `Draft`/`Review` records to authenticated callers. State this default explicitly in the search endpoint's documentation.

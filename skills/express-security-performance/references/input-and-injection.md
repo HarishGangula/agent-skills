@@ -2,7 +2,7 @@
 
 ## Overview
 
-**Validate and constrain every piece of input, and never interpolate it into a query, command, or path.** All injection — SQL, NoSQL, command, path traversal — comes from the same root cause: untrusted input treated as code or structure instead of data. The defenses are layered:
+**Validate and constrain every piece of input, and never interpolate it into a query, command, or path.** All injection — SQL, NoSQL, command, path traversal — shares one root cause: untrusted input treated as code or structure instead of data. The defenses are layered:
 
 1. **Validate at the boundary.** Use a schema validator (Zod, Joi, or express-validator) on `req.body`, `req.params`, `req.query` so malformed/oversized/unexpected input is rejected before it reaches business logic.
 2. **Parameterize, don't concatenate.** Use prepared statements / parameterized queries for SQL, query builders or driver parameters for NoSQL. Never build a query string with `+ userInput`.
@@ -13,12 +13,12 @@ NoSQL injection deserves special note: in MongoDB, a JSON body like `{ "user": {
 
 ## When to Use
 
-Apply to any route that reads `req.body`, `req.query`, `req.params`, headers, or uploaded files and uses them in a database query, filesystem path, shell command, template, or redirect.
+Any route that reads `req.body`, `req.query`, `req.params`, headers, or uploaded files and uses them in a database query, filesystem path, shell command, template, or redirect.
 
 ## Common Rationalizations
 
 - *"It's an internal API, inputs are trusted."* Internal callers get compromised, get bugs, and get reused publicly later. Validate anyway — it's also free input documentation.
-- *"The ORM/driver escapes it."* Only if you use it correctly. String-built queries bypass the ORM's protection entirely. Confirm parameterization.
+- *"The ORM/driver escapes it."* Only if used correctly. String-built queries bypass the ORM's protection entirely. Confirm parameterization.
 - *"I check it on the frontend."* Client-side checks are UX, not security; the attacker doesn't use your frontend.
 - *"It's just a number."* Until it's `"1 OR 1=1"` or a 50MB string. Coerce and bound it.
 

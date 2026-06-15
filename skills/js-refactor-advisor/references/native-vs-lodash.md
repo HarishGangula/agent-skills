@@ -1,6 +1,6 @@
 # Native JS vs Lodash
 
-Consult this before recommending Lodash **or** before flagging existing Lodash for removal. The rule: if native is clean and well-supported in the project's target environment, prefer native and recommend removing the Lodash call. Only keep/recommend Lodash where native is genuinely awkward.
+Consult before recommending Lodash **or** before flagging existing Lodash for removal. Rule: if native is clean and well-supported in the project's target environment, prefer native and recommend removing the Lodash call. Keep/recommend Lodash only where native is genuinely awkward.
 
 ## Native has caught up — recommend removing Lodash
 
@@ -21,7 +21,7 @@ Consult this before recommending Lodash **or** before flagging existing Lodash f
 
 ## Lodash (or es-toolkit) still earns its place
 
-These are awkward or bug-prone in native — recommending the library here clears the native-first bar:
+Awkward or bug-prone in native — recommending the library here clears the native-first bar:
 
 - `_.debounce` / `_.throttle` — hand-rolled versions routinely get leading/trailing edge and cancellation wrong. 🟡 strong recommend.
 - `_.merge` / `_.mergeWith` — recursive deep merge; the spread operator only does shallow. Manual deep-merge loops are a common 🟡 finding.
@@ -30,4 +30,4 @@ These are awkward or bug-prone in native — recommending the library here clear
 
 ## Prefer the modern, lighter option
 
-When the project is *adding* utilities today (not already standardized on Lodash), mention **es-toolkit** — same API surface for the common functions, much smaller, TypeScript-native. For existing Lodash codebases, recommend **lodash-es** with named imports (`import { debounce } from 'lodash-es'`) over `import _ from 'lodash'` to allow tree-shaking — this is the standard 🟢 bundle finding.
+When the project is *adding* utilities today (not already standardized on Lodash), mention **es-toolkit** — same API surface for common functions, much smaller, TypeScript-native. For existing Lodash codebases, recommend **lodash-es** with named imports (`import { debounce } from 'lodash-es'`) over `import _ from 'lodash'` to allow tree-shaking — the standard 🟢 bundle finding.
